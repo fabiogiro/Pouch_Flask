@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width-device width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="x-ua-compatible" content="ie-edge">
+    <title>Data Analysis</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+</head>
+<body>
+<h1 style="text-align: center;>">Data Analysis</h1>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div>
+                <h3>{{ message }}</h3>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+    <form action="/dataanalysis" class="container" method="post">
+        <div class="row">
+            <div class="col-xs-3">
+                <input type="radio" id="quant" name="option" value="quant">
+                <label for="quant">Quant</label>
+            </div>
+            <div class="col-xs-2">
+                <input type="radio" id="value" name="option" value="value">
+                <label for="value">Value</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">
+                <input type="radio" id="monthyear" name="optiondate" value="monthyear">
+                <label for="monthyear">Month/year (format mm/yyyy)</label>
+            </div>
+            <div class="col-xs-2">
+                <input type="radio" id="year" name="optiondate" value="year">
+                <label for="year">Year</label>
+            </div>
+            <div class="col-xs-2">
+                <input type="text" name="searchfield" id="searchfield" class="form-control" maxlength="7">
+            </div>
+        </div>
+        <div class="row col-xs-2">
+            <button type="submit">Search</button>
+        </div>
+    </form>
+    <form action="/dataanalysis" class="container" method="get">
+        <div class="row col-xs-2">
+            <button type="submit"><a href="/">Return</a></button>
+        </div>
+    </form>
+</body>
+</html>

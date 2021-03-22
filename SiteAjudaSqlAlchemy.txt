@@ -1,0 +1,3 @@
+https://leportella.com/pt-br/tutorial-sqlalchemy/
+https://qastack.com.br/programming/17972020/how-to-execute-raw-sql-in-flask-sqlalchemy-app
+https://butecotecnologico.com.br/comecando-com-sql-alchemy/

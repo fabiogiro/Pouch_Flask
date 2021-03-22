@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pouch</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+</head>
+<h1 style="text-align:center;">New Pouch</h1>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div>
+                <h4>{{ message }}</h4>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<body>
+    <form action="/pouch_insert" class="container" method="post">
+        <div class="row">
+            <div class="col-md-6">
+                Code Pouch
+                <input type="text" name="codepouch" id="codepouch" class="form-control">
+                Code Card
+                <select name="codecard">
+                    {% for card in cards %}
+                      <option value={{ card.codecard }}>{{ card.namecard }}</option>
+                    {% endfor %}
+                </select>
+                Code Syndicate
+                <select name="codesynd">
+                    {% for synd in synds %}
+                      <option value={{ synd.codesynd }}>{{ synd.namesynd }}</option>
+                    {% endfor %}
+                </select>
+                Code Company
+                <select name="codecomp">
+                    {% for comp in comps %}
+                      <option value={{ comp.codecomp }}>{{ comp.namecomp }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                Arrived
+                <input type="date" name="dtarrived" id="dtarrived" class="form-control">
+                <br>
+                Quant
+                <input type="number" name="quant" id="quant" class="form-control">
+                Value (only numbers)
+                <input type="number" name="value" id="value" class="form-control">
+            </div>
+        </div>
+        <br>
+        <div class="row col-xs-1">
+            <button type="submit" class="btn btn-block btn-success">Submit</button>
+        </div>
+    </form>
+    <br>
+    <form action="/pouch_menu" class="container" method="get">
+        <div class="row col-xs-1">
+            <button type="submit" class="btn btn-block btn-warning">Cancel</button>
+        </div>
+    </form>
+</body>
+</html>

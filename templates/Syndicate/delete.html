@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+</head>
+<h1 style="text-align:center;">Confirm the Delete? {{ synd.namesynd }}</h1>
+<br>
+<body>
+    <form action="/synd_delete/{{ synd.id }}" class="container" method="post">
+        <div class="row col-xs-1">
+            <button type="submit" class="btn btn-block btn-success">Submit</button>
+        </div>
+    </form>
+    <br>
+    <form action="/synd_menu" class="container" method="get">
+        <div class="row col-xs-1">
+            <button type="submit" class="btn btn-block btn-warning">Cancel</button>
+        </div>
+    </form>
+</body>
+</html>

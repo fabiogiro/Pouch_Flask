@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width-device width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="x-ua-compatible" content="ie-edge">
+    <title>Report</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+</head>
+<body>
+<h1 style="text-align: center;>">Report</h1>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div>
+                <h3>{{ message }}</h3>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+    <form action="/report" class="container" method="post">
+        <div class="row">
+            <table class="table">
+                <div class="col-xs-2">
+                     Date Arrived (format dd/mm/yyyy)
+                    <input type="text" name="searchfield" id="searchfield" class="form-control">
+                    <button type="submit">Search</button>
+                </div>
+            </table>
+        </div>
+    </form>
+    <form action="/report" class="container" method="get">
+        <div class="row col-xs-1">
+            <button type="submit"><a href="/">Return</a></button>
+        </div>
+    </form>
+</body>
+</html>

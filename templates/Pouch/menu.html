@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width-device width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="x-ua-compatible" content="ie-edge">
+    <title>Pouch</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+</head>
+<body>
+<h1 style="text-align: center;>">Pouch</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Arrived</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pouch in pouchs %}
+                    <tr>
+                        <td>{{ pouch.codepouch }}</td>
+                        <td>{{ pouch.dtarrived }}</td>
+                        <td>
+                            <a href="/pouch_edit/{{ pouch.id }}">Edit</a> |
+                            <a href="/pouch_delete/{{ pouch.id }}">Delete</a> |
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-xs-3">
+            <button type="submit"><a href="/pouch_insert">Insert</a></button>
+            <button type="submit"><a href="/">Return</a></button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

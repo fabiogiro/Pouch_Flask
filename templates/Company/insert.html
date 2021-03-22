@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Syndicate</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+</head>
+<h1 style="text-align:center;">New Company</h1>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div>
+                <h4>{{ message }}</h4>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<body>
+    <form action="/comp_insert" class="container" method="post">
+        <div class="row">
+            <div class="col-md-6">
+                Code Syndicate
+                <select name="codesynd">
+                    {% for synd in synds %}
+                      <option value={{ synd.codesynd }}>{{ synd.namesynd }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                Code Company
+                <input type="number" name="codecomp" id="codecomp" class="form-control">
+                <br>
+                Name
+                <input type="text" name="namecomp" id="namecomp" class="form-control">
+            </div>
+        </div>
+        <br>
+        <div class="row col-xs-1">
+            <button type="submit" class="btn btn-block btn-success">Submit</button>
+        </div>
+    </form>
+    <br>
+    <form action="/comp_menu" class="container" method="get">
+        <div class="row col-xs-1">
+            <button type="submit" class="btn btn-block btn-warning">Cancel</button>
+        </div>
+    </form>
+</body>
+</html>
+<!--                <input type="number" name="codesynd" id="codesynd" class="form-control"> -->
+<!--
+                    {% for synd in synds %}
+                        <h4>{{ synd.codesynd }}</h4>
+                      <option value="{{ synd.codesynd }}"></option>
+                    {% endfor %}
+
+-->
