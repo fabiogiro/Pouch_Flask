@@ -70,7 +70,7 @@ def countcodepouchcomp(codecomp: str) -> int:
     return 0
 
 
-def getdataanalysis(dtini: str , dtfinal: str, optiondate: str) -> tuple:
+def getdataanalysis(dtini: str, dtfinal: str, optiondate: str) -> tuple:
     sql = f'SELECT DISTINCT(DTARRIVED), AVG(QUANT) AS TOTQUANT, AVG(VALUE) AS TOTVALUE' \
           ' FROM POUCH' \
           f' WHERE DTARRIVED BETWEEN "{str(dtini)}" AND "{str(dtfinal)}"'

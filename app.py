@@ -8,8 +8,8 @@ from Controller import CardController, SyndicateController, CompanyController, \
 from fpdf import FPDF
 from datetime import datetime
 import numpy as np
-import matplotlib.pyplot as plt
 from pandas import DataFrame
+import matplotlib.pyplot as plt
 
 app = config.app
 db = config.db
@@ -331,7 +331,8 @@ def report():
                         filepdf.add_page()
                         filepdf.set_font('Arial', '', 10)
                         filepdf.cell(190, 4, 'Page ' + str(filepdf.page_no()), 0, 1, 'R')
-                        subtitle = '   Date    Pouch      Card       Syndicate       Company        Quant  Value'
+                        subtitle = '   Date    Pouch      Card       Syndicate       Company        ' \
+                                   'Quant  Value'
                         filepdf.set_font('Courier', '', 10)
                         filepdf.cell(190, 4, subtitle, 0, 1, 'L')
                         contline = 2
@@ -339,7 +340,8 @@ def report():
                     contline += 1
 
                     filepdf.cell(210, 4, f'{dtarrive:} {codepouch:<10} {codecard:<10} '
-                                         f'{codesynd:<15} {codecomp:<15} {quant:>4} {value:>6.2f}', 0, 1, 'L')
+                                         f'{codesynd:<15} {codecomp:<15} {quant:>4} '
+                                         f'{value:>6.2f}', 0, 1, 'L')
                 try:
                     dtarrived = searchfield[6:] + '-' + searchfield[3:5] + '-' + searchfield[:2]
                     filepdf.output(f'ReportPouch_{dtarrived}.pdf', 'F')  # D - Web   F- Local
@@ -353,31 +355,52 @@ def report():
 def getparameters(optiondate: str, option: str, searchfield: str) -> str:
     year = searchfield[-4:]
 
+    message = ''
+
     if optiondate == 'monthyear':
         month = searchfield[:2]
         dtini, dtfinal = utils.first_last_day(int(month), int(year))
 
-        lstdate, lstquant, lstvalue = PouchModel.getdataanalysis(dtini, dtfinal, 'monthyear')
+        npday = np.zeros(12)
+        npquant = np.zeros(12)
+        npvalue = np.zeros(12)
 
-        if len(lstdate) > 0:
-            x = lstdate
+        # lstdate, lstquant, lstvalue = PouchModel.getdataanalysis(dtini, dtfinal, 'monthyear')
+        npday, npquant, npvalue = PouchModel.getdataanalysis(dtini, dtfinal, 'monthyear')
+
+        # if len(lstdate) > 0:
+        if utils.founddata(npday):
+            x = npday  # lstdate
+            ylabel = ''
 
             if option == 'quant':
-                y = lstquant
-                plt.bar(x, y, label='QUANT', color='g')
+                y = npquant  # lstquant
+                ylabel = 'Quant'
+#                plt.bar(x, y, label='QUANT', color='g')
+                plt.bar(x, y, color='g')
             elif option == 'value':
-                y = lstvalue
-                plt.bar(x, y, label='VALUE', color='b')
+                y = npvalue  # lstvalue
+                ylabel = 'Value'
+#                plt.bar(x, y, label='VALUE', color='b')
+                plt.bar(x, y, color='b')
 
-            plt.legend()
-            plt.show()
+            plt.xlabel('Day')
+            plt.ylabel(ylabel)
+            plt.title(str(month) + '/' + str(year))
+            plt.grid(True)
+#            plt.legend()
+#            plt.show()
+            # https://www.youtube.com/watch?v=cXlMfA7aH1U
+            plt.savefig(f'{str(year)}_{str(month):0>2}_{ylabel}.pdf', format='pdf',
+                        transparent=True, bbox_inches='tight')
+            message = f'Report {str(year)}_{str(month):0>2}_{ylabel}.pdf saved'
         else:
-            return "Don´t have register"
+            message = "Don´t have register"
 
     if optiondate == 'year':
-        processyear(int(year), option)
+        message = processyear(int(year), option)
 
-    return ''
+    return message
 
 
 def processyear(year: int, option: str):
@@ -388,70 +411,83 @@ def processyear(year: int, option: str):
     dtini = str(year) + '-01-01'
     dtfinal = str(year) + '-12-31'
 
-    lstdate, lstquant, lstvalue = PouchModel.getdataanalysis(dtini, dtfinal, 'year')
+    # lstdate, lstquant, lstvalue = PouchModel.getdataanalysis(dtini, dtfinal, 'year')
+    npmonth, npquant, npvalue = PouchModel.getdataanalysis(dtini, dtfinal, 'year')
 
-    if len(lstdate) > 0:
-        dct = {'month': lstdate, 'quant': lstquant, 'value': lstvalue}
+    if utils.founddata(npmonth):
+    # if len(lstdate) > 0:
+        # dct = {'month': lstdate, 'quant': lstquant, 'value': lstvalue}
+        dct = {'month': npmonth, 'quant': npquant, 'value': npvalue}
 
         frame = DataFrame(dct)
-
+        # group by from pandas is slower than group by from database
         if option == 'quant':
             frame.groupby(by='month')['quant'].mean()
         else:
             frame.groupby(by='month')['value'].mean()
 
-#        countmonth = 0
-#        totquant = 0
-#        totvalue = 0
-#        month = 0
-#
-#        for count in range(1, len(lstdate)):
-#            monthactual = lstdate[count]
-#            if month == 0:   # first time
-#                month = monthactual
-#            if month != monthactual:
-#                npmonth[month - 1] = month
-#                npquant[month - 1] = round(totquant / countmonth)
-#                npvalue[month - 1] = round(totvalue / countmonth)
-#
-#                month = monthactual
-#
-#                countmonth = 0
-#                totquant = 0
-#                totvalue = 0
-#
-#            countmonth += 1
-#            totquant += lstquant[count]
-#            totvalue += lstvalue[count]
-#
-#        npmonth[month - 1] = month
-#        npquant[month - 1] = round(totquant / countmonth)
-#        npvalue[month - 1] = round(totvalue / countmonth)
-#
-#        x = npmonth
-#
-#        if option == 'quant':
-#            y = npquant
-#            plt.bar(x, y, label='QUANT', color='g')
-#        elif option == 'value':
-#            y = npvalue
-#            plt.bar(x, y, label='VALUE', color='b')
-
         x = frame['month']
+        ylabel = ''
+
+        #    countmonth = 0
+        #    totquant = 0
+        #    totvalue = 0
+        #    month = 0
+        #
+        #    for count in range(1, len(lstdate)):
+        #        monthactual = lstdate[count]
+        #        if month == 0:   # first time
+        #            month = monthactual
+        #        if month != monthactual:
+        #            npmonth[month - 1] = month
+        #            npquant[month - 1] = round(totquant / countmonth)
+        #            npvalue[month - 1] = round(totvalue / countmonth)
+        #
+        #            month = monthactual
+        #
+        #            countmonth = 0
+        #            totquant = 0
+        #            totvalue = 0
+        #
+        #        countmonth += 1
+        #        totquant += lstquant[count]
+        #        totvalue += lstvalue[count]
+        #
+        #    npmonth[month - 1] = month
+        #    npquant[month - 1] = round(totquant / countmonth)
+        #    npvalue[month - 1] = round(totvalue / countmonth)
+        #
+        #    x = npmonth
+        #
+        #    if option == 1:
+        #        y = npquant
+        #        plt.bar(x, y, label='QUANT', color='g')
+        #    elif option == 2:
+        #        y = npvalue
+        #        plt.bar(x, y, label='VALUE', color='b')
 
         if option == 'quant':
             y = frame['quant']
-            plt.bar(x, y, label='QUANT', color='g')
+            ylabel = 'Quant'
+#            plt.bar(x, y, label='QUANT', color='g')
+            plt.bar(x, y, color='g')
         elif option == 'value':
             y = frame['value']
+            ylabel = 'Value'
+#            plt.bar(x, y, label='VALUE', color='b')
             plt.bar(x, y, label='VALUE', color='b')
 
-        plt.legend()
-        plt.show()
+        plt.xlabel('Month')
+        plt.ylabel(ylabel)
+        plt.title(str(year))
+        plt.grid(True)
+#        plt.legend()
+#        plt.show()
+        plt.savefig(f'{str(year)}_{ylabel}.pdf', format='pdf', transparent=True,
+                    bbox_inches='tight')
+        return f'Report {str(year)}_{ylabel}.pdf saved'
     else:
         return "Don´t have register"
-
-    return ''
 
 
 @app.route('/dataanalysis', methods=['GET', 'POST'])

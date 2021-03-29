@@ -1,6 +1,7 @@
 #import datetime
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
+import numpy as np
 
 
 def criticaint(valuefield: str, namefield: str) -> str:
@@ -43,3 +44,12 @@ def first_last_day(month: int, year: int) -> tuple:
     dtfinal = dtfinal - timedelta(days=1)
 
     return dtini, dtfinal
+
+
+def founddata(npdata: np) -> bool:
+    cont = 0
+    found = False
+    while cont <= 11 and not found:
+        if npdata[cont] > 0:
+            found = True
+    return found
