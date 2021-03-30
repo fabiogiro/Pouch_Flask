@@ -361,10 +361,6 @@ def getparameters(optiondate: str, option: str, searchfield: str) -> str:
         month = searchfield[:2]
         dtini, dtfinal = utils.first_last_day(int(month), int(year))
 
-        npday = np.zeros(12)
-        npquant = np.zeros(12)
-        npvalue = np.zeros(12)
-
         # lstdate, lstquant, lstvalue = PouchModel.getdataanalysis(dtini, dtfinal, 'monthyear')
         npday, npquant, npvalue = PouchModel.getdataanalysis(dtini, dtfinal, 'monthyear')
 
@@ -386,7 +382,7 @@ def getparameters(optiondate: str, option: str, searchfield: str) -> str:
 
             plt.xlabel('Day')
             plt.ylabel(ylabel)
-            plt.title(str(month) + '/' + str(year))
+            plt.title(f'{str(month):0>2}/{str(year)}')
             plt.grid(True)
 #            plt.legend()
 #            plt.show()

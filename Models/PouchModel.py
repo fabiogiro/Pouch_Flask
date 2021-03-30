@@ -1,4 +1,5 @@
 import config
+from Controller.utils import first_last_day
 
 app = config.app
 db = config.db
@@ -83,13 +84,40 @@ def getdataanalysis(dtini: str, dtfinal: str, optiondate: str) -> tuple:
     lstquant = []
     lstvalue = []
 
+    month = int(dtini[5:7])
+    year = int(dtini[:4])
+
+    if optiondate == 'monthyear''':
+        dt1, dt2 = first_last_day(month, year)
+        dt2_str = dt2.strftime('%Y-%m-%d')  # convert date to str
+        maxday = int(dt2_str[-2::])
+        # initialize the list
+        for i in range(0, maxday):
+            lstdate.append(0)
+            lstquant.append(0)
+            lstvalue.append(0)
+    elif optiondate == 'year':
+        # initialize the list
+        for i in range(0, 366):
+            lstdate.append(0)
+            lstquant.append(0)
+            lstvalue.append(0)
+
+    i = 0
     for reg in data:
+        daymonth = 0
         if optiondate == 'monthyear':
-            lstdate.append(int(reg[0][-2::]))  # day 2020-01-20  -> 20
+            daymonth = int(reg[0][-2::])
+            # lstdate.append(int(reg[0][-2::]))  # day 2020-01-20  -> 20
         elif optiondate == 'year':
-            lstdate.append(int(reg[0][5:7]))  # month 2020-01-20  -> 01
-        lstquant.append(reg[1])
-        lstvalue.append(reg[2])
+            daymonth = int(reg[0][5:7])  # month 2020-01-20  -> 01
+            # lstdate.append(int(reg[0][5:7]))  # month 2020-01-20  -> 01
+        lstdate[i] = daymonth
+        lstquant[i] = reg[1]
+        lstvalue[i] = reg[2]
+
+        i += 1
+
     return lstdate, lstquant, lstvalue
 
 
